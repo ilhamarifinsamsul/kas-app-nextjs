@@ -17,7 +17,7 @@ import {
 import { NavMain } from "./nav-main"
 import { NavProjects } from "./nav-project"
 import { NavUser } from "./nav-user"
-import { TeamSwitcher } from "./team-switcher"
+import { TeamSwitcher } from "../../../components/ui/team-switcher"
 import {
   Sidebar,
   SidebarContent,
