@@ -3,16 +3,9 @@
 import * as React from "react";
 import {
   AudioWaveform,
-  BookOpen,
-  Bot,
   Command,
-  Frame,
   GalleryVerticalEnd,
   LayoutDashboard,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
   Users,
   Wallet,
 } from "lucide-react";
@@ -55,7 +48,7 @@ const data = {
     },
     {
       title: "Members",
-      url: "/members",
+      url: "/dashboard/members",
       icon: Users,
     },
     {
