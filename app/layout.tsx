@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NextAuthSession from "./NextAuthSession";
 import { UIProviders } from "./providers/layout-ui";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default function RootLayout({
         <NextAuthSession>
           <UIProviders>{children}</UIProviders>
         </NextAuthSession>
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );

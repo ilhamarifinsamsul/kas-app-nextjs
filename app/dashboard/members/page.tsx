@@ -13,28 +13,7 @@ import { PlusCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { DataTable } from "@/components/ui/data-table";
 import { columns } from "./columns";
-import { DashboardHeader } from "../_components/header";
-import { toast } from "sonner";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-
-interface Member {
-  id: number;
-  name: string;
-  niat: string;
-  address: string;
-  phone: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { getMembers, Member } from "./data/members";
 
 export default function MemberPage() {
   const [members, setMembers] = useState<Member[]>([]);
@@ -43,20 +22,18 @@ export default function MemberPage() {
   const fetchMembers = async () => {
     try {
       setLoading(true);
-      const res = await fetch("/api/members");
+      const data = await getMembers();
 
-      if (!res.ok) {
-        throw new Error("Gagal mengambil data member");
-      }
-
-      const data = await res.json();
       setMembers(data);
     } catch (error) {
       console.error(error);
-      toast.error("Gagal memuat data members");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDeleted = (id: number) => {
+    setMembers((prev) => prev.filter((m) => m.id !== id));
   };
 
   useEffect(() => {
@@ -99,7 +76,7 @@ export default function MemberPage() {
               <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
             </div>
           ) : (
-            <DataTable columns={columns} data={members} />
+            <DataTable columns={columns(handleDeleted)} data={members} />
           )}
         </CardContent>
       </Card>

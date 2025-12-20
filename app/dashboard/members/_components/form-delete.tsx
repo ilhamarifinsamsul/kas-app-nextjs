@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ActionResult } from "@/types";
@@ -18,51 +18,31 @@ import {
 
 import { toast } from "sonner";
 
-const initialState: ActionResult = {
-  error: "",
-  success: "",
-};
+import { deleteMember } from "../data/members";
 
 interface FormDeleteProps {
   id: number;
+  onDeleted: (id: number) => void;
 }
 
-export default function FormDelete({ id }: FormDeleteProps) {
+export default function FormDelete({ id, onDeleted }: FormDeleteProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [state, setState] = useState<ActionResult>(initialState);
   const [loading, setLoading] = useState(false);
 
   async function handleDelete() {
     try {
       setLoading(true);
 
-      const res = await fetch("/api/members", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id }),
-      });
-
-      if (!res.ok) {
-        throw new Error("Gagal menghapus member");
-      }
-
-      setState({
-        success: "Member berhasil dihapus",
-        error: "",
-      });
-
+      await deleteMember(id);
+      onDeleted(id);
       toast.success("Member berhasil dihapus");
-      router.refresh(); // revalidate table
+      await new Promise((resolve) => setTimeout(resolve, 500));
       setOpen(false);
+      router.refresh();
     } catch (error) {
       console.error(error);
-      setState({
-        success: "",
-        error: "Terjadi kesalahan saat menghapus member",
-      });
+
       toast.error("Gagal menghapus member");
     } finally {
       setLoading(false);

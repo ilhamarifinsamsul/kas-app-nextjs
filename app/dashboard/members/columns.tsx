@@ -7,57 +7,55 @@ import { Edit } from "lucide-react";
 import Link from "next/link";
 import FormDelete from "./_components/form-delete";
 
-export const columns: ColumnDef<Member>[] = [
+export const columns = (
+  onDeleted: (id: number) => void
+): ColumnDef<Member>[] => [
   {
-    id: "No",
+    id: "no",
     header: "#",
     cell: ({ row }) => row.index + 1,
   },
   {
     accessorKey: "name",
     header: "Nama",
-    cell: ({ row }) => {
-      const name = row.original;
-      return <div className="font-medium">{name.name}</div>;
-    },
+    cell: ({ row }) => <div className="font-medium">{row.original.name}</div>,
   },
   {
     accessorKey: "niat",
     header: "No Niat",
-    cell: ({ row }) => {
-      const noNiat = row.original;
-      return <div className="font-medium">{noNiat.niat}</div>;
-    },
+    cell: ({ row }) => <div className="font-medium">{row.original.niat}</div>,
   },
   {
     accessorKey: "address",
     header: "Alamat",
-    cell: ({ row }) => {
-      const address = row.original;
-      return <div className="font-medium">{address.address}</div>;
-    },
+    cell: ({ row }) => (
+      <div className="font-medium">{row.original.address}</div>
+    ),
   },
   {
     accessorKey: "phone",
     header: "No HP",
-    cell: ({ row }) => {
-      const phone = row.original;
-      return <div className="font-medium">{phone.phone}</div>;
-    },
+    cell: ({ row }) => <div className="font-medium">{row.original.phone}</div>,
   },
   {
     header: "Actions",
     id: "actions",
     cell: ({ row }) => {
       const member = row.original;
+
       return (
-        <div className="space-x-4 inline-flex">
+        <div className="inline-flex gap-3">
           <Link href={`/dashboard/members/edit/${member.id}`}>
             <Button variant="outline" size="sm">
-              <Edit className="h-4 w-4" /> Edit
+              <Edit className="mr-1 h-4 w-4" />
+              Edit
             </Button>
           </Link>
-          <FormDelete id={member.id} />
+
+          <FormDelete
+            id={member.id}
+            onDeleted={() => onDeleted(member.id)} // 🔥
+          />
         </div>
       );
     },

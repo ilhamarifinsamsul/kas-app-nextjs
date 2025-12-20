@@ -18,7 +18,7 @@ import { Member } from "@prisma/client";
 import { ActionResult } from "@/types";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { id } from "zod/v4/locales";
+import { createMember, updateMember } from "../data/members";
 
 const initialState: ActionResult = {
   error: "",
@@ -73,26 +73,17 @@ export default function FormMembers({
     setState(initialState);
 
     try {
-      const res = await fetch("api/members", {
-        method: type === "ADD" ? "POST" : "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(
-          type === "ADD" ? formState : { id: data?.id, ...formState }
-        ),
-      });
-      const result = await res.json();
-
-      if (!res.ok) {
-        throw new Error(result.error || "Something went wrong");
+      if (type === "ADD") {
+        await createMember(formState);
+        toast.success("Member berhasil ditambahkan");
+      } else {
+        await updateMember({
+          id: data!.id,
+          ...formState,
+        });
+        toast.success("Member berhasil diupdate");
       }
-
-      toast.success(
-        type === "ADD"
-          ? "Member added successfully"
-          : "Member updated successfully"
-      );
+      await new Promise((resolve) => setTimeout(resolve, 500));
       router.push("/dashboard/members");
       router.refresh();
     } catch (error: any) {
