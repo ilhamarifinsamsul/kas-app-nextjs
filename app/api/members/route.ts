@@ -1,8 +1,9 @@
 // app/api/members/route.ts
-import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import { memberCreateSchema } from "./schema";
+import { handleApiError } from "@/lib/api-error";
+import { success } from "zod";
 
 // GET : List all members
 export async function GET() {
@@ -19,58 +20,35 @@ export async function GET() {
     });
   } catch (error) {
     console.error("GET Error:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Internal Server Error",
-        message: "Failed to fetch members",
-      },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }
 
 // POST : Create a new member
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, niat, address, phone } = body;
 
-    // Validation
-    if (!name || !niat || !address || !phone) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Bad Request",
-          message: "All fields are required",
-        },
-        { status: 400 }
-      );
-    }
+    // ZOD Validation
+    const data = memberCreateSchema.parse(body);
 
     // Check for duplicate niat
-    const existingMember = await prisma.member.findFirst({
-      where: { niat },
+    const duplicate = await prisma.member.findFirst({
+      where: { niat: data.niat },
     });
-
-    if (existingMember) {
+    if (duplicate) {
       return NextResponse.json(
         {
           success: false,
-          error: "Duplicate",
-          message: "Member with this niat already exists",
+          error: "Conflict",
+          message: "Niat Tidak Boleh Sama Dengan Anggota Lain",
         },
         { status: 409 }
       );
     }
 
     const newMember = await prisma.member.create({
-      data: {
-        name,
-        niat,
-        address,
-        phone,
-      },
+      data,
     });
 
     return NextResponse.json(
@@ -83,13 +61,6 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("POST Error:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Internal Server Error",
-        message: "Failed to create member",
-      },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }

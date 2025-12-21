@@ -1,18 +1,20 @@
 // app/api/members/[id]/route.ts
-import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import { memberUpdateSchema } from "../schema";
+import { handleApiError } from "@/lib/api-error";
 
-const prisma = new PrismaClient();
+type Params = {
+  params: Promise<{ id: string }>;
+};
 
 // GET : Get single member by ID
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, { params }: Params) {
   try {
-    const id = parseInt(params.id);
+    const { id } = await params;
+    const memberid = Number(id);
 
-    if (isNaN(id)) {
+    if (isNaN(memberid)) {
       return NextResponse.json(
         {
           success: false,
@@ -24,7 +26,7 @@ export async function GET(
     }
 
     const member = await prisma.member.findUnique({
-      where: { id },
+      where: { id: memberid },
     });
 
     if (!member) {
@@ -57,16 +59,14 @@ export async function GET(
 }
 
 // PUT : Update an existing member
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request, { params }: Params) {
   try {
-    const id = parseInt(params.id);
+    const { id } = await params;
+    const memberid = Number(id);
     const body = await request.json();
-    const { name, niat, address, phone } = body;
+    // const { name, niat, address, phone } = body;
 
-    if (isNaN(id)) {
+    if (isNaN(memberid)) {
       return NextResponse.json(
         {
           success: false,
@@ -78,60 +78,12 @@ export async function PUT(
     }
 
     // Validation
-    if (!name || !niat || !address || !phone) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Bad Request",
-          message: "All fields are required",
-        },
-        { status: 400 }
-      );
-    }
-
-    // Check if member exists
-    const existingMember = await prisma.member.findUnique({
-      where: { id },
-    });
-
-    if (!existingMember) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Not Found",
-          message: "Member not found",
-        },
-        { status: 404 }
-      );
-    }
-
-    // Check for duplicate niat (if niat is being changed)
-    if (niat !== existingMember.niat) {
-      const duplicateNiat = await prisma.member.findFirst({
-        where: { niat },
-      });
-
-      if (duplicateNiat) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: "Duplicate",
-            message: "Another member with this niat already exists",
-          },
-          { status: 409 }
-        );
-      }
-    }
+    const data = memberUpdateSchema.parse(body);
 
     // Update member
     const updatedMember = await prisma.member.update({
-      where: { id },
-      data: {
-        name,
-        niat,
-        address,
-        phone,
-      },
+      where: { id: memberid },
+      data,
     });
 
     return NextResponse.json({
@@ -141,26 +93,16 @@ export async function PUT(
     });
   } catch (error) {
     console.error("PUT Error:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Internal Server Error",
-        message: "Failed to update member",
-      },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }
 
 // DELETE : Delete a member
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request, { params }: Params) {
   try {
-    const id = parseInt(params.id);
-
-    if (isNaN(id)) {
+    const { id } = await params;
+    const memberid = Number(id);
+    if (isNaN(memberid)) {
       return NextResponse.json(
         {
           success: false,
@@ -171,25 +113,9 @@ export async function DELETE(
       );
     }
 
-    // Check if member exists
-    const existingMember = await prisma.member.findUnique({
-      where: { id },
-    });
-
-    if (!existingMember) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Not Found",
-          message: "Member not found",
-        },
-        { status: 404 }
-      );
-    }
-
     // Delete member
     await prisma.member.delete({
-      where: { id },
+      where: { id: memberid },
     });
 
     return NextResponse.json({

@@ -40,12 +40,12 @@ export async function createMember(
     body: JSON.stringify(data),
   });
 
+  const json = await res.json();
+
   if (!res.ok) {
-    throw new Error("Gagal membuat member baru");
+    throw new Error(json?.message || "Gagal membuat member baru");
   }
 
-  const json = await res.json();
-  // toast.success("Member baru berhasil dibuat");
   return json.data;
 }
 
@@ -80,10 +80,10 @@ export async function updateMember(data: {
     body: JSON.stringify(data),
   });
 
-  if (!res.ok) {
-    throw new Error("Gagal mengupdate member");
-  }
   const json = await res.json();
+  if (!res.ok) {
+    throw new Error(json?.message || "Gagal mengupdate member");
+  }
   // toast.success("Member berhasil diupdate");
   return json.data;
 }
@@ -96,6 +96,7 @@ export async function deleteMember(id: number) {
   });
 
   if (!res.ok) {
-    throw new Error("Gagal menghapus member");
+    const json = await res.json();
+    throw new Error(json?.message || "Gagal menghapus member");
   }
 }
