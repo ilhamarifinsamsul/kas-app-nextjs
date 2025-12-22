@@ -43,7 +43,7 @@ enum TransactionType {
 model Transaction {
   id          Int             @id @default(autoincrement())
   memberId    Int?
-  amount      BigInt
+  amount      Int             
   description String?         @db.VarChar(255)
   type        TransactionType
   date        DateTime        @default(now())
