@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { ActionResult } from "@/types";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +18,7 @@ import {
 import { toast } from "sonner";
 
 import { deleteMember } from "../data/members";
+import { Loader2 } from "lucide-react";
 
 interface FormDeleteProps {
   id: number;
@@ -81,6 +81,7 @@ export default function FormDelete({ id, onDeleted }: FormDeleteProps) {
             onClick={handleDelete}
             disabled={loading}
           >
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {loading ? "Deleting..." : "Delete"}
           </Button>
         </DialogFooter>

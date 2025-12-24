@@ -52,13 +52,14 @@ export default function MemberPage() {
             Kelola data anggota TAGANA
           </p>
         </div>
-
-        <Button asChild className="w-full sm:w-auto">
+        <div className="flex items-center space-x-2">
           <Link href="/dashboard/members/create">
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Tambah Anggota
+            <Button className="w-full sm:w-auto">
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Tambah Anggota
+            </Button>
           </Link>
-        </Button>
+        </div>
       </div>
 
       {/* Content */}

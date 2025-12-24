@@ -19,6 +19,7 @@ import { ActionResult } from "@/types";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { createMember, updateMember } from "../data/members";
+import { Loader2 } from "lucide-react";
 
 const initialState: ActionResult = {
   error: "",
@@ -171,7 +172,8 @@ export default function FormMembers({
             </Link>
 
             <Button disabled={isLoading} type="submit">
-              {isLoading ? "Menyimpan..." : "Simpan"}
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isLoading ? "Menyimpan..." : "Add Member"}
             </Button>
           </div>
         </form>

@@ -3,18 +3,22 @@ import prisma from "@/lib/prisma";
 import { handleApiError } from "@/lib/api-error";
 import { transactionUpdateSchema } from "../schema";
 
-interface Params {
-  params: {
-    id: string;
-  };
-}
+// interface Params {
+//   params: {
+//     id: string;
+//   };
+// }
 
 // GET : Get a transaction by ID
-export async function GET(_request: NextRequest, { params }: Params) {
+export async function GET(
+  _request: NextRequest,
+  context: { params: { id: string } }
+) {
   try {
-    const id = Number(params.id);
+    const { id } = await context.params;
+    const transactionid = Number(id);
 
-    if (isNaN(id)) {
+    if (isNaN(transactionid)) {
       return NextResponse.json(
         {
           success: false,
@@ -25,7 +29,7 @@ export async function GET(_request: NextRequest, { params }: Params) {
     }
 
     const transaction = await prisma.transaction.findUnique({
-      where: { id },
+      where: { id: transactionid },
     });
     if (!transaction) {
       return NextResponse.json(
@@ -49,10 +53,14 @@ export async function GET(_request: NextRequest, { params }: Params) {
 }
 
 // PUT : Update a transaction by ID
-export async function PUT(request: NextRequest, { params }: Params) {
+export async function PUT(
+  request: NextRequest,
+  context: { params: { id: string } }
+) {
   try {
-    const id = Number(params.id);
-    if (isNaN(id)) {
+    const { id } = await context.params;
+    const transactionid = Number(id);
+    if (isNaN(transactionid)) {
       return NextResponse.json(
         {
           success: false,
@@ -67,7 +75,7 @@ export async function PUT(request: NextRequest, { params }: Params) {
 
     // Check if transaction exists
     const existingTransaction = await prisma.transaction.findUnique({
-      where: { id },
+      where: { id: transactionid },
     });
 
     if (!existingTransaction) {
@@ -82,7 +90,7 @@ export async function PUT(request: NextRequest, { params }: Params) {
 
     // Update transaction
     const updateTransaction = await prisma.transaction.update({
-      where: { id },
+      where: { id: transactionid },
       data: {
         memberId: parsed.memberId ?? undefined,
         amount: parsed.amount ?? undefined,
@@ -104,10 +112,15 @@ export async function PUT(request: NextRequest, { params }: Params) {
 }
 
 // DELETE : Delete a transaction by ID
-export async function DELETE(_request: NextRequest, { params }: Params) {
+export async function DELETE(
+  _request: NextRequest,
+  context: { params: { id: string } }
+) {
   try {
-    const id = Number(params.id);
-    if (isNaN(id)) {
+    const { id } = await context.params;
+    const transactionid = Number(id);
+
+    if (isNaN(transactionid)) {
       return NextResponse.json(
         {
           success: false,
@@ -119,7 +132,7 @@ export async function DELETE(_request: NextRequest, { params }: Params) {
 
     // Check if transaction exists
     const existingTransaction = await prisma.transaction.findUnique({
-      where: { id },
+      where: { id: transactionid },
     });
     if (!existingTransaction) {
       return NextResponse.json(
@@ -132,7 +145,7 @@ export async function DELETE(_request: NextRequest, { params }: Params) {
     }
 
     await prisma.transaction.delete({
-      where: { id },
+      where: { id: transactionid },
     });
 
     return NextResponse.json({

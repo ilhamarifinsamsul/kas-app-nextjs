@@ -1,11 +1,12 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Transaction } from "@prisma/client";
+import { Transaction, TransactionType } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { Edit } from "lucide-react";
 import Link from "next/link";
 import FormDelete from "./_components/form-delete";
+import { Badge } from "@/components/ui/badge";
 
 // TColumn
 export type TColumn = {
@@ -13,9 +14,24 @@ export type TColumn = {
   member_name: string;
   amount: number;
   description: string;
+  type: TransactionType;
   date: Date;
   createdAt: Date;
   updatedAt: Date;
+};
+
+const transactionTypeBadge = (type: "INCOME" | "EXPENSE") => {
+  return (
+    <Badge
+      className={
+        type === "INCOME"
+          ? "bg-green-100 text-green-700"
+          : "bg-red-100 text-red-700"
+      }
+    >
+      {type}
+    </Badge>
+  );
 };
 
 // helper function to format currency
@@ -57,6 +73,11 @@ export const columns = (
     cell: ({ row }) => (
       <div className="font-medium">{formatRupiah(row.original.amount)}</div>
     ),
+  },
+  {
+    accessorKey: "type",
+    header: "Jenis",
+    cell: ({ row }) => transactionTypeBadge(row.original.type),
   },
   {
     accessorKey: "description",

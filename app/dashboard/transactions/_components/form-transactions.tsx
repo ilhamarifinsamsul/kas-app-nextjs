@@ -31,6 +31,7 @@ import {
   updateTransaction,
 } from "../data/transactions";
 import { getMembers, Member } from "../../members/data/members";
+import { Loader2 } from "lucide-react";
 
 const initialState = {
   error: "",
@@ -53,7 +54,7 @@ export default function FormTransaction({
   const [state, setState] = useState<ActionResult>(initialState);
 
   const [formState, setFormState] = useState({
-    memberId: data?.memberId?.toString() || "",
+    memberId: data?.memberId?.toString() || undefined,
     amount: data?.amount?.toString() || "",
     description: data?.description || "",
     type: data?.type || TransactionType.INCOME,
@@ -142,20 +143,28 @@ export default function FormTransaction({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Member */}
-          <div className="space-y-1">
+          <div className="space-y-2">
             <Label htmlFor="member">Member</Label>
             <Select
               value={formState.memberId}
               onValueChange={(value) =>
-                setFormState({ ...formState, memberId: value })
+                setFormState({
+                  ...formState,
+                  memberId: value === "-" ? undefined : value,
+                })
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a member (optional)" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="-">-</SelectItem>
+
                 {members.map((member) => (
-                  <SelectItem key={member.id} value={member.id.toString()}>
+                  <SelectItem
+                    key={member.id}
+                    value={member.id.toString() || "-"}
+                  >
                     {member.name}
                   </SelectItem>
                 ))}
@@ -164,7 +173,7 @@ export default function FormTransaction({
           </div>
 
           {/* Amount */}
-          <div className="space-y-1">
+          <div className="space-y-2">
             <Label htmlFor="amount">Amount</Label>
             <Input
               id="amount"
@@ -179,7 +188,7 @@ export default function FormTransaction({
           </div>
 
           {/* Type */}
-          <div className="space-y-1">
+          <div className="space-y-2">
             <Label htmlFor="type">Type</Label>
             <Select
               value={formState.type}
@@ -187,7 +196,7 @@ export default function FormTransaction({
                 setFormState({ ...formState, type: value as TransactionType })
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -197,7 +206,7 @@ export default function FormTransaction({
             </Select>
 
             {/* DATE */}
-            <div className="space-y-1">
+            <div className="space-y-2">
               <Label>Date</Label>
               <Input
                 type="datetime-local"
@@ -209,7 +218,7 @@ export default function FormTransaction({
             </div>
 
             {/* DESCRIPTION */}
-            <div className="space-y-1">
+            <div className="space-y-2">
               <Label>Description</Label>
               <Input
                 value={formState.description}
@@ -231,7 +240,14 @@ export default function FormTransaction({
               </Link>
 
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Loading..." : type === "ADD" ? "Add" : "Update"}
+                {isLoading && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin"></Loader2>
+                )}
+                {isLoading
+                  ? "Processing..."
+                  : type === "ADD"
+                  ? "Add Transaction"
+                  : "Update Transaction"}
               </Button>
             </div>
           </div>
