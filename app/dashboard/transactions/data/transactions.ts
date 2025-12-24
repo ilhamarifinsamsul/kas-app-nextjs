@@ -1,10 +1,9 @@
 import { TransactionType } from "@prisma/client";
 
 export interface Transaction {
-  [x: string]: any;
   id: number;
-  memberId?: number | null;
-  amount: string;
+  memberId: number | null;
+  amount: number;
   description?: string | null;
   type: TransactionType;
   date: Date;

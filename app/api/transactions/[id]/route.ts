@@ -3,12 +3,6 @@ import prisma from "@/lib/prisma";
 import { handleApiError } from "@/lib/api-error";
 import { transactionUpdateSchema } from "../schema";
 
-// interface Params {
-//   params: {
-//     id: string;
-//   };
-// }
-
 // GET : Get a transaction by ID
 export async function GET(
   _request: NextRequest,
@@ -92,7 +86,7 @@ export async function PUT(
     const updateTransaction = await prisma.transaction.update({
       where: { id: transactionid },
       data: {
-        memberId: parsed.memberId ?? undefined,
+        memberId: parsed.memberId,
         amount: parsed.amount ?? undefined,
         description: parsed.description ?? undefined,
         type: parsed.type ?? undefined,

@@ -103,7 +103,7 @@ export const columns = (
         <div className="inline-flex gap-3">
           <Link href={`/dashboard/transactions/edit/${transaction.id}`}>
             <Button variant="outline" size="sm">
-              <Edit className="h-4 w-4" />
+              <Edit className="h-4 w-4" /> Edit
             </Button>
           </Link>
 

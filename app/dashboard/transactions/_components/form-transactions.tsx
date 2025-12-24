@@ -54,7 +54,7 @@ export default function FormTransaction({
   const [state, setState] = useState<ActionResult>(initialState);
 
   const [formState, setFormState] = useState({
-    memberId: data?.memberId?.toString() || undefined,
+    memberId: data?.memberId?.toString() || "",
     amount: data?.amount?.toString() || "",
     description: data?.description || "",
     type: data?.type || TransactionType.INCOME,
@@ -146,11 +146,11 @@ export default function FormTransaction({
           <div className="space-y-2">
             <Label htmlFor="member">Member</Label>
             <Select
-              value={formState.memberId}
+              value={formState.memberId?.toString() || "none"}
               onValueChange={(value) =>
                 setFormState({
                   ...formState,
-                  memberId: value === "-" ? undefined : value,
+                  memberId: value === "none" ? "" : value,
                 })
               }
             >
@@ -158,13 +158,10 @@ export default function FormTransaction({
                 <SelectValue placeholder="Select a member (optional)" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="-">-</SelectItem>
+                <SelectItem value="none">-</SelectItem>
 
                 {members.map((member) => (
-                  <SelectItem
-                    key={member.id}
-                    value={member.id.toString() || "-"}
-                  >
+                  <SelectItem key={member.id} value={member.id.toString()}>
                     {member.name}
                   </SelectItem>
                 ))}
@@ -178,7 +175,6 @@ export default function FormTransaction({
             <Input
               id="amount"
               type="number"
-              required
               value={formState.amount}
               onChange={(e) =>
                 setFormState({ ...formState, amount: e.target.value })
