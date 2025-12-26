@@ -46,9 +46,8 @@ export const columns = (
       return (
         <div className="inline-flex gap-3">
           <Link href={`/dashboard/members/edit/${member.id}`}>
-            <Button variant="outline" size="sm">
-              <Edit className="mr-1 h-4 w-4" />
-              Edit
+            <Button variant="outline" size="icon">
+              <Edit className="h-4 w-4" />
             </Button>
           </Link>
 

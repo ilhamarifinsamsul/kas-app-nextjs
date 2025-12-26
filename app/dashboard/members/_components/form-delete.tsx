@@ -52,9 +52,8 @@ export default function FormDelete({ id, onDeleted }: FormDeleteProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="destructive" size="sm">
-          <Trash className="mr-2 h-4 w-4" />
-          Delete
+        <Button variant="destructive" size="icon">
+          <Trash className="h-4 w-4" />
         </Button>
       </DialogTrigger>
 

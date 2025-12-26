@@ -59,6 +59,9 @@ export const columns = (
     id: "no",
     header: "#",
     cell: ({ row }) => row.index + 1,
+    meta: {
+      className: "hidden md:table-cell",
+    },
   },
   {
     accessorKey: "member_name",
@@ -71,7 +74,9 @@ export const columns = (
     accessorKey: "amount",
     header: "Jumlah",
     cell: ({ row }) => (
-      <div className="font-medium">{formatRupiah(row.original.amount)}</div>
+      <div className="font-semibold whitespace-nowrap">
+        {formatRupiah(row.original.amount)}
+      </div>
     ),
   },
   {
@@ -90,7 +95,9 @@ export const columns = (
     accessorKey: "date",
     header: "Tanggal",
     cell: ({ row }) => (
-      <div className="font-medium">{formatDate(row.original.date)}</div>
+      <div className="font-medium hidden md:block whitespace-nowrap">
+        {formatDate(row.original.date)}
+      </div>
     ),
   },
   {
@@ -102,8 +109,8 @@ export const columns = (
       return (
         <div className="inline-flex gap-3">
           <Link href={`/dashboard/transactions/edit/${transaction.id}`}>
-            <Button variant="outline" size="sm">
-              <Edit className="h-4 w-4" /> Edit
+            <Button variant="outline" size="icon">
+              <Edit className="h-4 w-4" />
             </Button>
           </Link>
 
