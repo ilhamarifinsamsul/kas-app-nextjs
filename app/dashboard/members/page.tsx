@@ -77,7 +77,11 @@ export default function MemberPage() {
               <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
             </div>
           ) : (
-            <DataTable columns={columns(handleDeleted)} data={members} />
+            <DataTable
+              columns={columns(handleDeleted)}
+              data={members}
+              label="Anggota"
+            />
           )}
         </CardContent>
       </Card>
