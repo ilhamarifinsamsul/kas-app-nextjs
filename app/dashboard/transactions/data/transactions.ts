@@ -1,6 +1,7 @@
 import { TransactionType } from "@prisma/client";
 
 export interface Transaction {
+  [x: string]: any;
   id: number;
   memberId: number | null;
   amount: number;

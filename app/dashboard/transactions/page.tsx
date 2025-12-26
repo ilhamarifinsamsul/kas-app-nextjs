@@ -7,6 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Loader2 } from "lucide-react";
@@ -16,9 +18,13 @@ import { columns } from "./columns";
 import { getTransactions, Transaction } from "./data/transactions";
 import { TColumn } from "./columns";
 
+// filter by type
+type TransactionType = "INCOME" | "EXPENSE" | "ALL";
+
 export default function TransactionPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [typeFilter, setTypeFilter] = useState<TransactionType>("ALL");
 
   const fetchTransactions = async () => {
     try {
@@ -41,8 +47,16 @@ export default function TransactionPage() {
     fetchTransactions();
   }, []);
 
+  // filtered Transaction
+  const filteredTransactions = transactions.filter((trx) => {
+    if (typeFilter === "ALL") return true;
+    {
+      return trx.type === typeFilter;
+    }
+  });
+
   //   tableData
-  const tableData: TColumn[] = transactions.map((trx) => ({
+  const tableData: TColumn[] = filteredTransactions.map((trx) => ({
     id: trx.id,
     member_name: trx.member?.name || "-",
     amount:
@@ -83,6 +97,28 @@ export default function TransactionPage() {
           <CardDescription>
             Total transaksi yang terdaftar : {transactions.length}
           </CardDescription>
+
+          {/* filter by type */}
+          <RadioGroup
+            value={typeFilter}
+            onValueChange={(value) => setTypeFilter(value as TransactionType)}
+            className="flex gap-6 pt-4 items-start"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="ALL" id="all" />
+              <Label htmlFor="all">Semua</Label>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="INCOME" id="income" />
+              <Label htmlFor="income">Income</Label>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="EXPENSE" id="expense" />
+              <Label htmlFor="expense">Expense</Label>
+            </div>
+          </RadioGroup>
         </CardHeader>
 
         <CardContent>
