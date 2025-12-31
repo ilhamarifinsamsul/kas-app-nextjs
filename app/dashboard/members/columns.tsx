@@ -44,7 +44,7 @@ export const columns = (
       const member = row.original;
 
       return (
-        <div className="inline-flex gap-3">
+        <div className="inline-flex gap-3 whitespace-nowrap">
           <Link href={`/dashboard/members/edit/${member.id}`}>
             <Button variant="outline" size="icon">
               <Edit className="h-4 w-4" />

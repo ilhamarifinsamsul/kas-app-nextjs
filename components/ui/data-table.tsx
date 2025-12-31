@@ -79,8 +79,13 @@ export function DataTable<TData, TValue>({
         />
       </div>
 
+      {/* Mobile hint */}
+      <p className="text-xs text-muted-foreground md:hidden">
+        Geser ke samping untuk melihat tabel →
+      </p>
+
       {/* Table */}
-      <div className="rounded-md border w-full overflow-x-auto">
+      <div className="relative w-full overflow-x-auto rounded-md border">
         <Table className="min-w-[700px] md:min-w-full">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -103,7 +108,7 @@ export function DataTable<TData, TValue>({
               table.getPaginationRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="whitespace-nowrap">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
