@@ -5,6 +5,7 @@ import { z } from "zod";
 import { PrismaClient } from "@prisma/client";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 declare module "next-auth" {
   interface Session {
