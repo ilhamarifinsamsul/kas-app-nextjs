@@ -4,6 +4,8 @@ import bcrypt from "bcrypt";
 import { z } from "zod";
 import { PrismaClient } from "@prisma/client";
 
+export const runtime = "nodejs";
+
 declare module "next-auth" {
   interface Session {
     user: {
