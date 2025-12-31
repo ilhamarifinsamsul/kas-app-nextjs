@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { ArrowUpCircle, Wallet, ArrowDownCircle } from "lucide-react";
 
+export const dynamic = "force-dynamic";
 export default async function DashboardPage() {
   // const incomeAgg
   const incomeAgg = await prisma.transaction.aggregate({
