@@ -3,6 +3,11 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import { z } from "zod";
 
+// 🔐 BLOCK EXECUTION SAAT BUILD
+if (process.env.NEXT_PHASE === "phase-production-build") {
+  throw new Error("Skipping signup route during build");
+}
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
