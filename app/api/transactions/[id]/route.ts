@@ -5,11 +5,11 @@ import { transactionUpdateSchema } from "../schema";
 
 // GET : Get a transaction by ID
 export async function GET(
-  _request: NextRequest,
-  context: { params: { id: string } }
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await context.params;
+    const { id } = await params;
     const transactionid = Number(id);
 
     if (isNaN(transactionid)) {
@@ -48,11 +48,11 @@ export async function GET(
 
 // PUT : Update a transaction by ID
 export async function PUT(
-  request: NextRequest,
-  context: { params: { id: string } }
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await context.params;
+    const { id } = await params;
     const transactionid = Number(id);
     if (isNaN(transactionid)) {
       return NextResponse.json(
@@ -64,7 +64,7 @@ export async function PUT(
       );
     }
 
-    const body = await request.json();
+    const body = await req.json();
     const parsed = transactionUpdateSchema.parse(body);
 
     // Check if transaction exists
@@ -107,11 +107,11 @@ export async function PUT(
 
 // DELETE : Delete a transaction by ID
 export async function DELETE(
-  _request: NextRequest,
-  context: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await context.params;
+    const { id } = await params;
     const transactionid = Number(id);
 
     if (isNaN(transactionid)) {
